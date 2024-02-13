@@ -68,6 +68,11 @@ def _convert_to_pdf(output_dir: str):
 
     data_dir = Path(output_dir) / "sec-edgar-filings"
 
+    wkhtmltopdf_options = {
+        'enable-local-file-access': None,  # Enables access to local files
+        'javascript-delay': '2000000'    # Sets the delay for JavaScript execution
+    }
+
     for cik_dir in data_dir.iterdir():
         for filing_type_dir in cik_dir.iterdir():
             for filing_dir in filing_type_dir.iterdir():
@@ -78,7 +83,7 @@ def _convert_to_pdf(output_dir: str):
                     input_path = str(filing_doc.absolute())
                     output_path = str(filing_pdf.absolute())
                     try:
-                        pdfkit.from_file(input_path, output_path, verbose=True)
+                        pdfkit.from_file(input_path, output_path, options=wkhtmltopdf_options, verbose=True)
                     except Exception as e:
                         print(f"Error converting {input_path} to {output_path}: {e}")
 
